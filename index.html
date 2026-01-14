@@ -1,17 +1,35 @@
-<div class = "score">
+<div class = "ui title" id = "title">
+    <h1><span>Welcome to Shooter Game!</span></h1>
+    <p><span>Enter your name below to begin! (Version 1.2)</span></p>
+</div>
+
+<div class = "score ui">
     <span>Score:</span>
     <span id = "scoreEl">0</span>
 </div>
 
+<div class = "quit ui" id = "quit">
+    <button>Quit Game</button>
+</div>
+
+<div class = "welcome" id = "welcomeTitle">
+    <h1></h1>
+</div>
+
 <div class = "start-game-container" id = "beginning">
     <div class = "start-game">
-        <h1><span id = "bigScoreEl">0</span></h1>
-        <p>Points</p>
+        <h1><span id = "bigScoreEl">Last Score: 0</span></h1>
+        <h1><span id = "bigHighScoreEl">High Score: 0</span></h1>
         <div>
+            <label for = "username"><span id = "username">Username:</span></label><br>
+            <p><span id = "usernameWarning">Don't forget to input your username!</span></p>
+            <input id = "usernameInput" name = "username" placeholder = "BestShooter123" required>
             <button id = "startGame">Start Game</button>
         </div>
     </div>
 </div>
+
+<div></div>
 
 <canvas></canvas>
 

@@ -4,10 +4,18 @@ const c = canvas.getContext('2d') //c stands for context
 canvas.width = innerWidth
 canvas.height = innerHeight
 
+//element initalizing
 const scoreElement = document.querySelector('#scoreEl')
 const bigScoreElement = document.querySelector('#bigScoreEl')
+const bigHighScoreElement = document.querySelector('#bigHighScoreEl')
 const startGame = document.querySelector('#StartGame')
-const ui = document.querySelector('#beginning')
+const start = document.querySelector('#beginning')
+const title = document.querySelector('#title')
+let username = document.querySelector('#username')
+const usernameInput = document.querySelector('#usernameInput')
+const usernameWarning = document.querySelector('#usernameWarning')
+let usernameValue = usernameInput.value
+const quit = document.querySelector('#quit')
 
 class Player {
     constructor(x, y, radius, color) {
@@ -53,12 +61,13 @@ class Projectile {
 }
 
 class Enemy {
-    constructor(x, y, radius, color, velocity) {
+    constructor(x, y, radius, color, velocity, type) {
         this.x = x
         this.y = y
         this.radius = radius
         this.color = color
         this.velocity = velocity
+        this.type = type
     }
 
     draw() {
@@ -76,6 +85,7 @@ class Enemy {
 }
 
 const friction = 0.99
+
 class Particle {
     constructor(x, y, radius, color, velocity) {
         this.x = x
@@ -114,6 +124,10 @@ let projectiles = []
 let enemies = []
 let particles = []
 let score = 0;
+let highScore = 0;
+
+const gray = 'rgb(128,128,128)'
+const green = 'rgb(15, 255, 110)'
 
 function init() {
     player = new Player(x, y, 20, 'white')
@@ -142,8 +156,9 @@ function spawnEnemies() {
             y = Math.random() < 0.5 ? 0 - radius : canvas.height + radius
         }
 
-
-        const color = `hsl(${Math.random() * 360}, 50%, 50%)`
+        color = `hsl(${Math.random() * 360}, 50%, 50%)`
+        const gray = 'rgb(128,128,128)'
+        const green = 'rgb(15, 255, 110)'
 
         const angle = Math.atan2(
             canvas.height/2 - y, canvas.width/2 - x)
@@ -153,8 +168,22 @@ function spawnEnemies() {
             y: Math.sin(angle) * 0.4
         }
 
-        enemies.push(new Enemy(x, y, radius, color, velocity))
+        let rand = Math.random() * 100
+
+        switch(true) {
+            case (rand <= 30):
+                enemies.push(new Enemy(x, y, radius, green, velocity, "splitter"))
+                console.log("Enemy spawned")
+                break;
+            
+            default:
+                enemies.push(new Enemy(x, y, radius, gray, velocity, "default"))
+        }
+
+        console.log(enemies)
     }, 1000) 
+
+    
 }
 
 let animationID
@@ -195,16 +224,24 @@ function animate() {
 
         if(distance - enemy.radius - player.radius < 1) {
             //end game
-            cancelAnimationFrame(animationID)
-            ui.style.display = "flex"
-            bigScoreElement.innerHTML = score
+            quitGame()
+
+            bigScoreElement.innerHTML = "Last Score: " + score + " Points"
+            
+            if(highScore < score) {
+                highScore = score;
+                bigHighScoreElement.innerHTML = "High Score: " + highScore + " Points"
+            }
         }
+
 
         projectiles.forEach((projectile, projectileIndex) => {
             const distance = Math.hypot(projectile.x - enemy.x, projectile.y - enemy.y)
 
             // when projectiles touch enemies
             if(distance - enemy.radius - projectile.radius < 1) {
+
+                
 
                 //creating particles
                 for(let i = 0; i < enemy.radius * 2; i++) {
@@ -213,9 +250,15 @@ function animate() {
                         projectile.y, 
                         Math.random() * 2,
                         enemy.color, 
-                        {x: (Math.random() - 0.5) * (Math.random() * 8), y: (Math.random() - 0.5) * (Math.random() * 8)}))
+                        {
+                            x: (Math.random() - 0.5) * (Math.random() * 8), 
+                            y: (Math.random() - 0.5) * (Math.random() * 8)
+                        }))
                 }
 
+                
+
+                //shrinks enemies
                 if (enemy.radius - 4 > 10) {
                     score += 10
                     scoreElement.innerHTML = score
@@ -223,11 +266,41 @@ function animate() {
                     gsap.to(enemy, {
                         radius: enemy.radius - 10
                     })
-                    projectiles.splice(projectileIndex)
+                    projectiles.splice(projectileIndex, 1)
                 } else {
                     setTimeout(() => {
-                        enemies.splice(index, 1)
-                        projectiles.splice(projectileIndex, 1)
+
+                        let enemyX = enemies[index].x
+                        let enemyY = enemies[index].y
+
+                        const angle = Math.atan2(
+                            canvas.height/2 - enemyY, canvas.width/2 - enemyX)
+
+                        switch(true) {
+                            case (enemies[index].type === "splitter"):
+                                
+                                
+
+                                enemies.splice(index, 1)
+                                projectiles.splice(projectileIndex, 1)
+
+                                enemies.push(new Enemy(enemyX + 15, enemyY + 15, 10, green, {
+                                    x: Math.cos(angle) * 0.15,
+                                    y: Math.sin(angle) * 0.15
+                                }, "default"))
+
+                                enemies.push(new Enemy(enemyX - 15, enemyY - 15, 10, green, {
+                                    x: Math.cos(angle) * 0.15,
+                                    y: Math.sin(angle) * 0.15
+                                }, "default"))
+                                break;
+
+                            default:
+                                enemies.splice(index, 1)
+                                projectiles.splice(projectileIndex, 1) 
+                        }
+
+                        
                     }, 0);
                     
                     score += 30;
@@ -238,6 +311,24 @@ function animate() {
     })
 
 }
+
+//ends the game
+function quitGame() {
+    cancelAnimationFrame(animationID)
+    start.style.display = "flex"
+    title.style.display = "block"
+    usernameWarning.style.display = "none"
+    username.innerHTML = usernameValue
+
+    bigScoreElement.innerHTML = "Last Score: " + score + " Points"
+            
+    if(highScore < score) {
+        highScore = score;
+        bigHighScoreElement.innerHTML = "High Score: " + highScore + " Points"
+    }
+}
+
+usernameWarning.style.display = "none"
 
 window.addEventListener('click', (event) => {
     const angle = Math.atan2(
@@ -254,11 +345,29 @@ window.addEventListener('click', (event) => {
 })
 
 startGame.addEventListener('click', (event) => {
-    init()
-    animate()
-    spawnEnemies()
+    
+    usernameValue = usernameInput.value
+    if(!usernameValue) {
+        usernameWarning.style.display = "block"
+    } 
+    else if (score != 0) {
+        init()
+        animate()
+        start.style.display = "none"
+        title.style.display = "none"
 
-    ui.style.display = "none"
+    } else {
+        init()
+        animate()
+        spawnEnemies()
+
+        start.style.display = "none"
+        title.style.display = "none"
+    }
+})
+
+quit.addEventListener('click', () => {
+    quitGame()
 })
 
 /*

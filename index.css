@@ -3,6 +3,11 @@ body {
     background-color: black;
 }
 
+.ui {
+    position: fixed;
+    user-select: none;
+}
+
 .score {
     position: fixed;
     margin-left: 5px;
@@ -15,6 +20,26 @@ body {
     font-size: 14px;
 }
 
+.quit {
+    text-align: right;
+    width: 100%;
+}
+
+.title {
+    text-align: center;
+    color: white;
+    width: 100%;
+    display: block;
+}
+
+.welcome {
+    position: fixed;
+    display: flex;
+    text-align: center;
+    color: white;
+    user-select: none;
+}
+
 .start-game-container {
     position: fixed;
     top: 0;
@@ -24,6 +49,11 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    user-select: none;
+}
+
+.start-game-container p {
+    color: red;
 }
 
 .start-game {
