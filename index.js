@@ -8,15 +8,23 @@ canvas.height = innerHeight
 const scoreElement = document.querySelector('#scoreEl')
 const bigScoreElement = document.querySelector('#bigScoreEl')
 const bigHighScoreElement = document.querySelector('#bigHighScoreEl')
+
 const startGame = document.querySelector('#StartGame')
 const start = document.querySelector('#beginning')
+
 const title = document.querySelector('#title')
-let username = document.querySelector('#username')
+
+const username = document.querySelector('#username')
 const usernameInput = document.querySelector('#usernameInput')
 const usernameWarning = document.querySelector('#usernameWarning')
 let usernameValue = usernameInput.value
 const quit = document.querySelector('#quit')
 
+const levelExperience = document.querySelector('#level-experience')
+const levelValue = document.querySelector('#level-title')
+const levelBar = document.querySelector('#level-bar')
+
+//class initializing
 class Player {
     constructor(x, y, radius, color) {
         this.x = x
@@ -124,7 +132,13 @@ let projectiles = []
 let enemies = []
 let particles = []
 let score = 0;
+let lastScore = score;
 let highScore = 0;
+let enemiesKilled = 0;
+let experience = 0;
+let experienceRequired = 1000;
+let levelRate = 1;
+let level = 0;
 
 const gray = 'rgb(128,128,128)'
 const green = 'rgb(15, 255, 110)'
@@ -135,7 +149,33 @@ function init() {
     enemies = []
     particles = []
     score = 0;
+    enemiesKilled = 0;
     scoreElement.innerHTML = score
+}
+
+function levelUp() {
+    lastScore += score;
+    experience += score + 5 * enemiesKilled
+    
+    while(experienceRequired <= experience) {
+        experienceRequired *= 2.25 * levelRate
+        levelRate * 1.05
+        level++
+    }
+
+    Math.round(experienceRequired)
+
+    let gradientLevel = (experience/experienceRequired) * 100
+
+    levelBar.style.background = `linear-gradient(90deg,rgba(114, 42, 155, 1) ${gradientLevel}%, rgba(62, 64, 66, 1) 0%)`
+
+    levelValue.innerHTML = "Level: " + level
+    levelExperience.innerHTML = experience + "/" + experienceRequired + " Experience"
+    console.log("Last Score = " + lastScore)
+    console.log("Experience = " + experience)
+    console.log("Experience Required = " + experienceRequired)
+    console.log("Level Rate = " + levelRate)
+    console.log("Level = " + level)
 }
 
 player.draw();
@@ -159,6 +199,7 @@ function spawnEnemies() {
         color = `hsl(${Math.random() * 360}, 50%, 50%)`
         const gray = 'rgb(128,128,128)'
         const green = 'rgb(15, 255, 110)'
+        const red = 'rgb(255,0,0)'
 
         const angle = Math.atan2(
             canvas.height/2 - y, canvas.width/2 - x)
@@ -172,15 +213,19 @@ function spawnEnemies() {
 
         switch(true) {
             case (rand <= 30):
-                enemies.push(new Enemy(x, y, radius, green, velocity, "splitter"))
-                console.log("Enemy spawned")
+                enemies.push(new Enemy(x, y, 24, green, velocity, "splitter"))
                 break;
             
+            case (rand > 30 && rand <= 50):
+                enemies.push(new Enemy(x, y, 10, red, {
+                    x: Math.cos(angle) * 0.8,
+                    y: Math.sin(angle) * 0.8
+                }, "explosive"))
+                break;
+
             default:
                 enemies.push(new Enemy(x, y, radius, gray, velocity, "default"))
         }
-
-        console.log(enemies)
     }, 1000) 
 
     
@@ -225,6 +270,7 @@ function animate() {
         if(distance - enemy.radius - player.radius < 1) {
             //end game
             quitGame()
+
 
             bigScoreElement.innerHTML = "Last Score: " + score + " Points"
             
@@ -278,18 +324,16 @@ function animate() {
 
                         switch(true) {
                             case (enemies[index].type === "splitter"):
-                                
-                                
-
                                 enemies.splice(index, 1)
                                 projectiles.splice(projectileIndex, 1)
+                                enemiesKilled++;
 
-                                enemies.push(new Enemy(enemyX + 15, enemyY + 15, 10, green, {
+                                enemies.push(new Enemy(enemyX + 15, enemyY + 15, 12, green, {
                                     x: Math.cos(angle) * 0.15,
                                     y: Math.sin(angle) * 0.15
                                 }, "default"))
 
-                                enemies.push(new Enemy(enemyX - 15, enemyY - 15, 10, green, {
+                                enemies.push(new Enemy(enemyX - 15, enemyY - 15, 12, green, {
                                     x: Math.cos(angle) * 0.15,
                                     y: Math.sin(angle) * 0.15
                                 }, "default"))
@@ -326,9 +370,13 @@ function quitGame() {
         highScore = score;
         bigHighScoreElement.innerHTML = "High Score: " + highScore + " Points"
     }
+
+    levelUp()
 }
 
 usernameWarning.style.display = "none"
+levelExperience.innerHTML = score + "/" + experienceRequired + " Experience"
+
 
 window.addEventListener('click', (event) => {
     const angle = Math.atan2(
@@ -369,8 +417,3 @@ startGame.addEventListener('click', (event) => {
 quit.addEventListener('click', () => {
     quitGame()
 })
-
-/*
-animate()
-spawnEnemies()
-*/

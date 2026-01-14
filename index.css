@@ -52,7 +52,7 @@ body {
     user-select: none;
 }
 
-.start-game-container p {
+.start-game-container #usernameWarning {
     color: red;
 }
 
@@ -62,6 +62,10 @@ body {
     width: 100%;
     text-align: center;
     padding: 10px;
+}
+
+#usernameInput {
+    width: 60%;
 }
 
 .start-game button {
@@ -76,4 +80,17 @@ body {
 .start-game button:hover {
     background-color: blue;
     transition-duration: 0.5s;
+}
+
+.level-text {
+    display: flex;
+    justify-content: space-between;
+}
+
+.level-bar {
+    background-color: rgb(62,64,66);
+    width: 90%;
+    padding: 15px;
+    border-radius: 15px;
+    border: 3px solid black;
 }

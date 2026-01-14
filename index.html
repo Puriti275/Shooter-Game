@@ -1,6 +1,6 @@
 <div class = "ui title" id = "title">
     <h1><span>Welcome to Shooter Game!</span></h1>
-    <p><span>Enter your name below to begin! (Version 1.2)</span></p>
+    <p><span>Enter your name below to begin! (Version 1.3)</span></p>
 </div>
 
 <div class = "score ui">
@@ -24,6 +24,13 @@
             <label for = "username"><span id = "username">Username:</span></label><br>
             <p><span id = "usernameWarning">Don't forget to input your username!</span></p>
             <input id = "usernameInput" name = "username" placeholder = "BestShooter123" required>
+            <div class = "level">
+                <div class = "level-text">
+                    <p class = "level-title"><span id = "level-title">Level: 0</span></p>
+                    <p class = "level-experience"><span id = "level-experience">0/1000 Experience</span></p>
+                </div>
+                <div class = "level-bar" id = "level-bar"></div>
+            </div>
             <button id = "startGame">Start Game</button>
         </div>
     </div>
