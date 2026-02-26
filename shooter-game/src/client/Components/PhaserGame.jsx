@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
 import {useEffect, useRef} from "react"
 import Phaser from "phaser"
-import config from "../../../../game/config"
+import config from "../../game/config"
 
 export default function PhaserGame() {
     const gameRef = useRef(null)

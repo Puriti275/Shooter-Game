@@ -1,7 +1,10 @@
-import dynamic from "next/dynamic"
+"use client"
 
-const PhaserGame = dynamic(
-    () => import("./PhaserGame"), 
+import dynamic from "next/dynamic"
+import PhaserGame from "../../client/Components/PhaserGame"
+
+const ClientPhaserGame = dynamic(
+    () => import("../../client/Components/PhaserGame"), 
     {ssr: false}
 )
 
@@ -9,7 +12,7 @@ export default function Home() {
     return (
         <main>
             <h1>Next.js + Phaser</h1>
-            <PhaserGame/>
+            <ClientPhaserGame/>
         </main>
-    )
+    );
 }
