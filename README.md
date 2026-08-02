@@ -1,4 +1,4 @@
-# Shooter-Game
+# [Shooter-Game](https://puriti275.github.io/Shooter-Game/)
 
 A browser-based 2D shooter game engine built from scratch in JavaScript,
 implementing core game-engine systems: collision detection, scoring, and
@@ -11,18 +11,14 @@ player state management.
 
 ## Tech Stack
 - JavaScript (vanilla / Canvas API)
-- Unity/C# port in progress, visit [Balls](https://github.com/Puriti275/Balls) for updated contributions
+- Unity/C# port in progress and coming soon
 
 ## Why I built this
 Wanted to try my hand at bringing a game idea I had one day to life! 
 
 ## Status
 🚧 In progress — refactoring core logic into Unity/C# for better performance
-and scalability. Visit [Balls](https://github.com/Puriti275/Balls) for updated contributions
+and scalability. 
 
-## Running Locally
-```bash
-git clone https://github.com/Puriti275/Shooter-Game.git
-cd Shooter-Game
-# open index.html in a browser, or list your actual run command
-```
+## How to Play:
+Visit [this link](https://puriti275.github.io/Shooter-Game/) and have fun!
